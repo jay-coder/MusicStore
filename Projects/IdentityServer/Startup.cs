@@ -34,8 +34,6 @@ namespace JayCoder.MusicStore.IdentityServer
                 .AddInMemoryApiResources(Resources.GetApiResources())
                 .AddInMemoryClients(new PortalClientFactory(Configuration).GetClients())
                 .AddTestUsers(TestUsers.Users);
-
-            services.AddAuthentication();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -43,7 +41,6 @@ namespace JayCoder.MusicStore.IdentityServer
             app.UseStaticFiles();
 
             app.UseIdentityServer();
-            app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
         }
