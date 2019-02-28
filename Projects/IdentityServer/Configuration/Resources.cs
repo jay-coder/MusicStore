@@ -73,7 +73,8 @@ namespace JayCoder.MusicStore.IdentityServer.Configuration
                             }
                         }
                     }
-                }
+                },
+                new ApiResource("musicstore-api", "MusicStore API")
             };
         }
     }
