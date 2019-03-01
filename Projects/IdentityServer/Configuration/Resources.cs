@@ -4,6 +4,8 @@
 
 using IdentityModel;
 using IdentityServer4.Models;
+using JayCoder.MusicStore.Core.Domain.SQLEntities;
+using System;
 using System.Collections.Generic;
 
 namespace JayCoder.MusicStore.Projects.IdentityServer.Configuration
@@ -75,6 +77,37 @@ namespace JayCoder.MusicStore.Projects.IdentityServer.Configuration
                     }
                 },
                 new ApiResource("musicstore-api", "MusicStore API")
+            };
+        }
+
+        public static IEnumerable<ApplicationUser> GetApplicationUsers()
+        {
+            return new[]
+            {
+                new ApplicationUser()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "bob",
+                    Email = "bob@jaycoder.net",
+                    EmailConfirmed = true,
+                    FirstName = "Bob",
+                    LastName = "Smith",
+                    DOB = DateTime.Now.AddYears(-30),
+                    Enabled = true,
+                    UserType = Core.Domain.Enums.EnumUserType.PortalAdmin
+                },
+                new ApplicationUser()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "alice",
+                    Email = "alice@jaycoder.net",
+                    EmailConfirmed = true,
+                    FirstName = "Alice",
+                    LastName = "Smith",
+                    DOB = DateTime.Now.AddYears(-20),
+                    Enabled = true,
+                    UserType = Core.Domain.Enums.EnumUserType.Musician
+                }
             };
         }
     }
