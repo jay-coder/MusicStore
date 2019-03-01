@@ -10,8 +10,8 @@
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
-    <AssemblyName>JayCoder.MusicStore.WebUI</AssemblyName>
-    <RootNamespace>JayCoder.MusicStore.WebUI</RootNamespace>
+    <AssemblyName>JayCoder.MusicStore.Projects.WebUI</AssemblyName>
+    <RootNamespace>JayCoder.MusicStore.Projects.WebUI</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

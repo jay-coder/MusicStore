@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
 {
     public class LoginViewModel : LoginInputModel
     {

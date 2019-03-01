@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
 {
     /// <summary>
     /// This sample controller allows a user to revoke grants given to clients

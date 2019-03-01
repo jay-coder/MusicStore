@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JayCoder.MusicStore.IdentityServer.Configuration
+namespace JayCoder.MusicStore.Projects.IdentityServer.Configuration
 {
     public class PortalClientFactory
     {

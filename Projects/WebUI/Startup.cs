@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JayCoder.MusicStore.WebUI
+namespace JayCoder.MusicStore.Projects.WebUI
 {
     public class Startup
     {

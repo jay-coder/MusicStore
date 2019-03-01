@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <AssemblyName>JayCoder.MusicStore.WebAPI</AssemblyName>
+    <AssemblyName>JayCoder.MusicStore.Projects.WebAPI</AssemblyName>
     <RootNamespace>JayCoder.MusicStore.WebAPI</RootNamespace>
   </PropertyGroup>
 

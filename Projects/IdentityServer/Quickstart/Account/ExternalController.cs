@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
 {
     [SecurityHeaders]
     [AllowAnonymous]

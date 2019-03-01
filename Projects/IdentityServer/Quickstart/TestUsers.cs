@@ -7,7 +7,7 @@ using IdentityServer4.Test;
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
 {
     public class TestUsers
     {

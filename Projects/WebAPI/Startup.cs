@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace JayCoder.MusicStore.WebAPI
+namespace JayCoder.MusicStore.Projects.WebAPI
 {
     public class Startup
     {

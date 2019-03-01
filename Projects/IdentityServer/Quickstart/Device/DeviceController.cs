@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI.Device
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI.Device
 {
     [Authorize]
     [SecurityHeaders]

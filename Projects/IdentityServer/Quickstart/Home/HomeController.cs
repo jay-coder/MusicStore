@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
 {
     [SecurityHeaders]
     [AllowAnonymous]

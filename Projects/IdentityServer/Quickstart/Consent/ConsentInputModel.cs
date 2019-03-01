@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace JayCoder.MusicStore.IdentityServer.Quickstart.UI
+namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
 {
     public class ConsentInputModel
     {

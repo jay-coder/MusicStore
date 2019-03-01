@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <AssemblyName>JayCoder.MusicStore.IdentityServer</AssemblyName>
-    <RootNamespace>JayCoder.MusicStore.IdentityServer</RootNamespace>
+    <AssemblyName>JayCoder.MusicStore.Projects.IdentityServer</AssemblyName>
+    <RootNamespace>JayCoder.MusicStore.Projects.IdentityServer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

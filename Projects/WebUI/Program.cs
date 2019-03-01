@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace JayCoder.MusicStore.WebUI
+namespace JayCoder.MusicStore.Projects.WebUI
 {
     public class Program
     {

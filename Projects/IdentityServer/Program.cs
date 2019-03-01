@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace JayCoder.MusicStore.IdentityServer
+namespace JayCoder.MusicStore.Projects.IdentityServer
 {
     public class Program
     {

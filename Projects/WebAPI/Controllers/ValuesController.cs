@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace JayCoder.MusicStore.WebAPI.Controllers
+namespace JayCoder.MusicStore.Projects.WebAPI.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

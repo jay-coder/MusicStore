@@ -6,7 +6,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace JayCoder.MusicStore.IdentityServer.Configuration
+namespace JayCoder.MusicStore.Projects.IdentityServer.Configuration
 {
     public class Clients
     {

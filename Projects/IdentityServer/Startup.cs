@@ -1,11 +1,11 @@
-﻿using JayCoder.MusicStore.IdentityServer.Configuration;
-using JayCoder.MusicStore.IdentityServer.Quickstart.UI;
+﻿using JayCoder.MusicStore.Projects.IdentityServer.Configuration;
+using JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JayCoder.MusicStore.IdentityServer
+namespace JayCoder.MusicStore.Projects.IdentityServer
 {
     public class Startup
     {
