@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserProfileService } from '../userprofile/userprofile.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,6 +8,19 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
+  firstName: string = '';
+  lastName: string = '';
+  constructor(
+    private _userProfileService: UserProfileService
+  ) {
+    var that = this;
+    this._userProfileService.identityClaimsReady.subscribe(function (claims) {
+      if (claims) {
+        that.firstName = claims["FirstName"];
+        that.lastName = claims["LastName"];
+      }
+    });
+  }
 
   collapse() {
     this.isExpanded = false;

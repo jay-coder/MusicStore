@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 
 //OAuth2 OIDC Client
 import { OAuthModule } from 'angular-oauth2-oidc';
-
+//Components
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
@@ -15,6 +15,8 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { SampleComponent } from './sample/sample.component';
 //Http Interceptor
 import { TokenInterceptor } from './http/token.interceptor';
+//Services
+import { UserProfileService } from './userprofile/userprofile.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { TokenInterceptor } from './http/token.interceptor';
     ])
   ],
   providers: [
+    UserProfileService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

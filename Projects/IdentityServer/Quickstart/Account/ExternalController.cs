@@ -9,9 +9,12 @@ using IdentityServer4.Events;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer4.Test;
+using JayCoder.MusicStore.Core.Domain.Enums;
+using JayCoder.MusicStore.Core.Domain.SQLEntities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
@@ -20,24 +23,26 @@ namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
     [AllowAnonymous]
     public class ExternalController : Controller
     {
-        private readonly TestUserStore _users;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IEventService _events;
 
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         public ExternalController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
-            TestUserStore users = null)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager
+        )
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
-            // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
-            _users = users ?? new TestUserStore(TestUsers.Users);
-
             _interaction = interaction;
             _clientStore = clientStore;
             _events = events;
+
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         /// <summary>
@@ -90,14 +95,61 @@ namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
                 throw new Exception("External authentication error");
             }
 
-            // lookup our user and external provider info
-            var (user, provider, providerUserId, claims) = FindUserFromExternalProvider(result);
+            var extPrincipal = result.Principal;
+            var expProperties = result.Properties;
+            var claims = extPrincipal.Claims.ToList();
+
+            var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
+            if (userIdClaim == null)
+            {
+                userIdClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            }
+            if (userIdClaim == null)
+            {
+                throw new Exception("Unknown userid");
+            }
+
+            claims.Remove(userIdClaim);
+            var provider = expProperties.Items["scheme"];
+            var userId = userIdClaim.Value;
+
+            var user = await _userManager.FindByLoginAsync(provider, userId);
             if (user == null)
             {
-                // this might be where you might initiate a custom workflow for user registration
-                // in this sample we don't show how that would be done, as our sample implementation
-                // simply auto-provisions new external user
-                user = AutoProvisionUser(provider, providerUserId, claims);
+                var candidateId = Guid.NewGuid();
+                user = new ApplicationUser();
+                var emailClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+                if (emailClaim != null)
+                {
+                    user.UserName = emailClaim.Value;
+                    user.Email = emailClaim.Value;
+                    user.EmailConfirmed = true;
+                }
+                var firstNameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName);
+                if (firstNameClaim != null)
+                {
+                    user.FirstName = firstNameClaim.Value;
+                }
+                var lastNameClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname);
+                if (lastNameClaim != null)
+                {
+                    user.LastName = lastNameClaim.Value;
+                }
+                user.UserType = EnumUserType.Audience;
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    var loginResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, userId, provider));
+                    if (loginResult.Succeeded)
+                    {
+                        // Update Tokens to AspNet Identity
+                        var externalLoginInfo = new ExternalLoginInfo(extPrincipal, provider, userId, provider)
+                        {
+                            AuthenticationTokens = expProperties.GetTokens()
+                        };
+                        await _signInManager.UpdateExternalAuthenticationTokensAsync(externalLoginInfo);
+                    }
+                }
             }
 
             // this allows us to collect any additonal claims or properties
@@ -110,8 +162,10 @@ namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
             ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
 
             // issue authentication cookie for user
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.SubjectId, user.Username));
-            await HttpContext.SignInAsync(user.SubjectId, user.Username, provider, localSignInProps, additionalLocalClaims.ToArray());
+            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, userId, user.Id, user.UserName));
+            await HttpContext.SignInAsync(
+                user.Id, user.UserName, provider, localSignInProps, additionalLocalClaims.ToArray()
+            );
 
             // delete temporary cookie used during external authentication
             await HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
@@ -179,36 +233,6 @@ namespace JayCoder.MusicStore.Projects.IdentityServer.Quickstart.UI
                 // this URL is re-triggered when we call challenge
                 return Challenge(AccountOptions.WindowsAuthenticationSchemeName);
             }
-        }
-
-        private (TestUser user, string provider, string providerUserId, IEnumerable<Claim> claims) FindUserFromExternalProvider(AuthenticateResult result)
-        {
-            var externalUser = result.Principal;
-
-            // try to determine the unique id of the external user (issued by the provider)
-            // the most common claim type for that are the sub claim and the NameIdentifier
-            // depending on the external provider, some other claim type might be used
-            var userIdClaim = externalUser.FindFirst(JwtClaimTypes.Subject) ??
-                              externalUser.FindFirst(ClaimTypes.NameIdentifier) ??
-                              throw new Exception("Unknown userid");
-
-            // remove the user id claim so we don't include it as an extra claim if/when we provision the user
-            var claims = externalUser.Claims.ToList();
-            claims.Remove(userIdClaim);
-
-            var provider = result.Properties.Items["scheme"];
-            var providerUserId = userIdClaim.Value;
-
-            // find external user
-            var user = _users.FindByExternalProvider(provider, providerUserId);
-
-            return (user, provider, providerUserId, claims);
-        }
-
-        private TestUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
-        {
-            var user = _users.AutoProvisionUser(provider, providerUserId, claims.ToList());
-            return user;
         }
 
         private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)

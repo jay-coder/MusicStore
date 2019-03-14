@@ -1,20 +1,23 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-import { OAuthService, JwksValidationHandler } from 'angular-oauth2-oidc';
 import { authConfig } from '../config/auth.config';
 import { environment } from '../environments/environment';
+
+import { OAuthService, JwksValidationHandler } from 'angular-oauth2-oidc';
+import { UserProfileService } from './userprofile/userprofile.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private _oauthService: OAuthService
+    private _oauthService: OAuthService,
+    private _userProfileService: UserProfileService
   ) {
     if (isPlatformBrowser(this.platformId)) {
       this._oauthService.configure(authConfig);
@@ -36,7 +39,7 @@ export class AppComponent {
         if (!this._oauthService.hasValidIdToken() || !this._oauthService.hasValidAccessToken()) {
           this._oauthService.initImplicitFlow();
         } else {
-
+          this._userProfileService.onIdentityClaimsReadyChanged(this._oauthService.getIdentityClaims());
         }
       });
     }

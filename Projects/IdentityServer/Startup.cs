@@ -1,15 +1,18 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+﻿using IdentityServer4;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Services;
 using JayCoder.MusicStore.Core.Domain.SQLEntities;
 using JayCoder.MusicStore.Foundations.SQLServer.AspNetIdentity;
 using JayCoder.MusicStore.Projects.IdentityServer.Configuration;
+using JayCoder.MusicStore.Projects.IdentityServer.Profile;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Linq;
 using System.Reflection;
 
@@ -80,10 +83,34 @@ namespace JayCoder.MusicStore.Projects.IdentityServer
                     // options.TokenCleanupInterval = 15; // interval in seconds. 15 seconds useful for debugging
                 });
 
+            services.AddAuthentication()
+                .AddLinkedIn(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = Configuration["LinkedIn:ClientId"];
+                    options.ClientSecret = Configuration["LinkedIn:ClientSecret"];
+
+                    options.CallbackPath = new PathString("/linkedin");
+                    options.SaveTokens = true;
+                })
+                .AddMicrosoftAccount(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = Configuration["Microsoft:ApplicationId"];
+                    options.ClientSecret = Configuration["Microsoft:Password"];
+
+                    options.CallbackPath = new PathString("/microsoft");
+                    options.SaveTokens = true;
+                });
+
             if (Environment.IsDevelopment())
             {
                 identityServer.AddDeveloperSigningCredential();
             }
+
+            services.AddTransient<IProfileService, ProfileService>();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -94,6 +121,7 @@ namespace JayCoder.MusicStore.Projects.IdentityServer
             app.UseStaticFiles();
 
             app.UseIdentityServer();
+            app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
         }
