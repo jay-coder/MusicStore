@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 
 namespace JayCoder.MusicStore.Projects.WebAPI
@@ -28,6 +29,12 @@ namespace JayCoder.MusicStore.Projects.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Add Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "MusicStore API", Version = "v1" });
+            });
 
             services
                 .AddAuthentication("Bearer")
@@ -65,6 +72,13 @@ namespace JayCoder.MusicStore.Projects.WebAPI
             app.UseAuthentication();
 
             app.UseMvc();
+
+            // Use Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MusicStore API V1");
+            });
         }
     }
 }
