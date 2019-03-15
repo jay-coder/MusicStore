@@ -17,6 +17,8 @@ import { SampleComponent } from './sample/sample.component';
 import { TokenInterceptor } from './http/token.interceptor';
 //Services
 import { UserProfileService } from './userprofile/userprofile.service';
+//Security
+import { AuthGuardService } from './security/authguard.service';
 
 @NgModule({
   declarations: [
@@ -36,10 +38,18 @@ import { UserProfileService } from './userprofile/userprofile.service';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'sample', component: SampleComponent }
+      {
+        path: 'sample',
+        component: SampleComponent,
+        canActivate: [AuthGuardService],
+        data: {
+          expectedRole: 'Musician'
+        }
+      }
     ])
   ],
   providers: [
+    AuthGuardService,
     UserProfileService,
     {
       provide: HTTP_INTERCEPTORS,

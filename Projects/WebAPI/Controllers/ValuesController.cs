@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using JayCoder.MusicStore.Core.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace JayCoder.MusicStore.Projects.WebAPI.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = AuthorizePolicy.Musician)]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase

@@ -1,5 +1,6 @@
 ﻿using IdentityServer4.Models;
 using IdentityServer4.Services;
+using JayCoder.MusicStore.Core.Domain.Constants;
 using JayCoder.MusicStore.Core.Domain.SQLEntities;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
@@ -23,8 +24,9 @@ namespace JayCoder.MusicStore.Projects.IdentityServer.Profile
             if (user != null)
             {
                 var claims = new List<Claim>();
-                claims.Add(new Claim("FirstName", string.IsNullOrEmpty(user.FirstName) ? string.Empty : user.FirstName));
-                claims.Add(new Claim("LastName", string.IsNullOrEmpty(user.LastName) ? string.Empty : user.LastName));
+                claims.Add(new Claim(AuthorizeClaim.FirstName, string.IsNullOrEmpty(user.FirstName) ? string.Empty : user.FirstName));
+                claims.Add(new Claim(AuthorizeClaim.LastName, string.IsNullOrEmpty(user.LastName) ? string.Empty : user.LastName));
+                claims.Add(new Claim(AuthorizeClaim.UserType, user.UserType.ToString()));
                 context.IssuedClaims.AddRange(claims);
             }
             return Task.FromResult(0);

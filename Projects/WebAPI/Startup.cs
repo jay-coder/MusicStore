@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using JayCoder.MusicStore.Core.Domain.Constants;
+using JayCoder.MusicStore.Core.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
@@ -28,7 +30,14 @@ namespace JayCoder.MusicStore.Projects.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            var svcBuilder = services
+                .AddMvcCore()
+                .AddApiExplorer()
+                .AddJsonFormatters();
+
+            svcBuilder = svcBuilder.AddAuthorization(
+                options => BuildAuthorizationPolicies(options)
+            );
 
             // Add Swagger
             services.AddSwaggerGen(c =>
@@ -79,6 +88,15 @@ namespace JayCoder.MusicStore.Projects.WebAPI
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "MusicStore API V1");
             });
+        }
+
+        private void BuildAuthorizationPolicies(AuthorizationOptions options)
+        {
+            //Basic Policies
+            foreach (var userType in Enum.GetNames(typeof(EnumUserType)))
+            {
+                options.AddPolicy(userType, policy => policy.RequireClaim(AuthorizeClaim.UserType, userType));
+            }
         }
     }
 }
